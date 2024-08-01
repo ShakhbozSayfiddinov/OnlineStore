@@ -3,6 +3,7 @@ const app = express();
 require('dotenv').config();
 const categoriesRauter = require('./router/categories');
 const customersRauter = require('./router/customers');
+const coursesRouter  = require('./router/courses');
 const { default: mongoose } = require('mongoose');
 
 mongoose.connect(process.env.MONGO_URL)
@@ -18,6 +19,7 @@ mongoose.connect(process.env.MONGO_URL)
 app.use(express.json());
 app.use('/api/categories' , categoriesRauter);
 app.use('/api/customers' , customersRauter);
+app.use('/api/courses' , coursesRouter)
 
 
 const port = process.env.PORT
