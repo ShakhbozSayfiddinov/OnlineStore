@@ -1,29 +1,13 @@
 const express = require('express');
 const app = express();
-require('dotenv').config();
-const categoriesRauter = require('./router/categories');
-const customersRauter = require('./router/customers');
-const coursesRouter  = require('./router/courses');
-const { default: mongoose } = require('mongoose');
-
-mongoose.connect(process.env.MONGO_URL)
-.then(() => {
-    console.log('mongodbga ulanish hosil qilindi' ,);
-})
-.catch((err)  => {
-    console.log('mangooosega ulanishda xatolik ro`y berdi' , err);
-})
-
-
-
-app.use(express.json());
-app.use('/api/categories' , categoriesRauter);
-app.use('/api/customers' , customersRauter);
-app.use('/api/courses' , coursesRouter)
-
+const winston = require('winston');
+require('./startup/logging')();
+require('./startup/rautes')(app);
+require('./startup/db')();
+require('./startup/config')();
 
 const port = process.env.PORT
 app.listen(port, () => {
-    console.log('name:',process.env.NAME);
-    console.log(`${port} - portni eshitishni boshladim...`);
+   // winston.info('name:',process.env.NAME);
+    winston.info(`${port} - portni eshitishni boshladim...`);
 })

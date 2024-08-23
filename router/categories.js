@@ -1,64 +1,59 @@
-const express = require('express');
-const { Category } = require('../models/category');
+const express = require("express");
 const router = express.Router();
+const { Category, validate } = require("../models/category");
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
-router.get('/' , async(req, res) => {
-    console.log(req.body);
-    
-   const categories = await Category.find().sort('name');
-  res.send(categories) 
-})
-
-
-router.post('/' ,async (req,res) => {
-
-    // const error = validate(req.body);
-    if(error)
-        return res.status(400).send(error.details[0].message);
-    let category = new Category({
-        name: req.body.name
-    });
-    category = await category.save();  
-
-    res.status(201).send(category.id);
+router.get("/", auth, async (req, res) => {
+  throw new Error('toifalarni olishda kutilmagan xato yuz berdi. ')
+  const categories = await Category.find().sort("name");
+  res.send(categories);
 });
-router.get('/:id' , async (req, res) => {
-    console.log(req.params);
-    let category = await Category.findById(req.params.id)
-    if(!category)
-        return res.status(404).send('berilgan id raqamli kurs topilmadi. ')
-    res.send(category);
+
+router.post("/", auth, async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  let category = new Category({
+    name: req.body.name,
+  });
+  category = await category.save();
+
+  res.status(201).send(category);
 });
-router.put('/:id' , async (req,res) => {
-    // const errror  = validate(req.body);
-    if(!category) {
-        return res.status(404).send('berilgan IDdagi kurs topilmadi. ')
+
+router.get("/:id", auth, async (req, res) => {
+  let category = await Category.findById(req.params.id);
+  if (!category)
+    return res.status(404).send("Berilgan IDga teng bo'lgan toifa topilmadi");
+
+  res.send(category);
+});
+
+router.put("/:id", auth, async (req, res) => {
+  const { error } = validate(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  let category = await Category.findByIdAndUpdate(
+    req.params.id,
+    { name: req.body.name },
+    {
+      new: true,
     }
+  );
 
-    // const error = validate(req.body);
-    if (error)
-        return res.status(400).send(error);
+  if (!category)
+    return res.status(404).send("Berilgan IDga teng bo'lgan toifa topilmadi");
 
-    let category = await Category.findByIdAndUpdate(
-        req.params.id, 
-        {name: req.body.name},
-         {new: true}
-        );
-    if(!category) 
-        return res.status(404).send('berilgan Idga teng bo`lgan toifa topilmadi.')
-    res.send(category)        
-        
-    category.name = req.body.name;
-    res.send(category);
-})
+  res.send(category);
+});
 
-router.delete('/:id' , async (req,res) => {
-   let category = await Category.findByIdAndDelete(req.params.id)
-    if(!category) {
-        return res.status(404).send('berilgan IDdagi kurs topilmadi. ')
-    }
+router.delete("/:id", [auth, admin], async (req, res) => {
+  let category = await Category.findByIdAndDelete(req.params.id);
+  if (!category)
+    return res.status(404).send("Berilgan IDga teng bo'lgan toifa topilmadi");
 
-    res.send(category);
+  res.send(category);
 });
 
 module.exports = router;
