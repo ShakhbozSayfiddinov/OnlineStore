@@ -10,7 +10,7 @@ module.exports = function () {
       db: "mongodb://localhost/virtualdars-logs",
     })
   );
-  winston.exceptions.handle(new winston.transport.Console(),
+  winston.exceptions.handle(new winston.transports.Console(),
     new winston.transports.File({ filename: "logs/vd-logs.log" })
   ); // => bu pastdagi kodni vazifasini bajaradi.
   // process.on('uncaughtException' , ex => {

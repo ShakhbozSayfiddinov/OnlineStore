@@ -1,10 +1,12 @@
 {
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "compression": "^1.7.4",
     "config": "^3.3.12",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
+    "helmet": "^7.1.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
@@ -16,11 +18,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "test": "jest --watchAll --coverage",
+    "start": "node index.js"
   },
-  "keywords": [],
+  "engines": {
+    "node": "20.15.1"
+  },
+  "keywords": [
+    "virtualdars" , 
+    "dasturlas",
+    "nodejs",
+    "hashing"
+  ],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
 }
